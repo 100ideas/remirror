@@ -20,7 +20,7 @@ export type RemirrorProviderProps = MakeOptional<Omit<RemirrorProps, 'children'>
  * - `useRemirrorContext`
  * - `usePositioner`
  *
- * Or the higher order component
+ * Or the higher order components
  * - `withRemirror`
  * - `withPositioner`
  */
@@ -79,7 +79,6 @@ export const withPositioner = <GRefKey extends string = 'ref'>({
     return (
       <RemirrorContext.Consumer>
         {({ getPositionerProps }) => {
-          console.log(getPositionerProps({ ...positioner, ...rest }));
           return (
             <WrappedComponent
               {...Cast<GProps>({ ...props, ...getPositionerProps<GRefKey>({ ...positioner, ...rest }) })}

@@ -6,10 +6,12 @@ import { EditorState, PluginKey } from 'prosemirror-state';
 import { AnyExtension } from './extension';
 import {
   createFlexibleFunctionMap,
+  ExtensionMapValue,
   extensionPropertyMapper,
   hasExtensionProperty,
   isMarkExtension,
   isNodeExtension,
+  transformExtensionMap,
 } from './extension-manager.helpers';
 import { bool } from './helpers';
 import { getPluginState } from './helpers/document';
@@ -29,9 +31,7 @@ import {
   RemirrorActions,
 } from './types';
 
-interface ExtensionManagerConstructorParams {
-  /** The list of extensions to use */
-  extensions: AnyExtension[];
+interface ExtensionManagerInitParams {
   /** A shortcut to pulling the editor state */
   getEditorState: () => EditorState;
   /** A shortcut to pulling the portal container */
@@ -42,19 +42,38 @@ export class ExtensionManager {
   /**
    * A helper static method for creating a new extension manager.
    */
-  public static create({
-    extensions,
-    getEditorState,
-    getPortalContainer,
-  }: ExtensionManagerConstructorParams) {
-    return new ExtensionManager(extensions, getEditorState, getPortalContainer);
+  public static create(extensions: ExtensionMapValue[]) {
+    return new ExtensionManager(extensions);
   }
 
-  constructor(
-    public readonly extensions: AnyExtension[],
-    public readonly getEditorState: () => EditorState,
-    public readonly getPortalContainer: () => NodeViewPortalContainer,
-  ) {}
+  public getEditorState!: () => EditorState;
+  public getPortalContainer!: () => NodeViewPortalContainer;
+  public readonly extensions: AnyExtension[];
+  private initialized = false;
+
+  constructor(extensionMapValues: ExtensionMapValue[]) {
+    this.extensions = transformExtensionMap(extensionMapValues);
+  }
+
+  /**
+   * Initialize the getters used when
+   */
+  public init({ getEditorState, getPortalContainer }: ExtensionManagerInitParams) {
+    this.getEditorState = getEditorState;
+    this.getPortalContainer = getPortalContainer;
+    this.initialized = true;
+  }
+
+  /**
+   * Checks to see if the extension manager has been initialized and throws if not
+   */
+  private checkInitialized() {
+    if (!this.initialized) {
+      throw new Error(
+        'Before using the extension manager it must be initialized with a getPortalContainer and editorState',
+      );
+    }
+  }
 
   /**
    * Filters through all provided extensions and picks the nodes
@@ -103,6 +122,7 @@ export class ExtensionManager {
    * Retrieve all plugins from the passed in extensions
    */
   public plugins(params: ExtensionManagerParams) {
+    this.checkInitialized();
     const plugins: ProsemirrorPlugin[] = [];
     const extensionPlugins = this.extensions
       .filter(hasExtensionProperty('plugin'))
@@ -192,6 +212,8 @@ export class ExtensionManager {
    * - `isEnabled` defaults to a function returning true
    */
   public actions(params: CommandParams): RemirrorActions {
+    this.checkInitialized();
+
     const actions: RemirrorActions = {};
     const commands = this.commands(params);
     const active = this.active(params);
@@ -213,6 +235,7 @@ export class ExtensionManager {
    * Retrieve the state for a given extension name. This will throw an error if the extension doesn't exist.
    */
   public getPluginState<GState>(name: string): GState {
+    this.checkInitialized();
     const key = this.pluginKeys[name];
     if (!key) {
       throw new Error(`Cannot retrieve state for an extension: ${name} which doesn\'t exist`);
