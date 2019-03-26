@@ -1,4 +1,4 @@
-import { EditorState, ExtensionManager, PlainObject } from '@remirror/core';
+import { EditorState, ExtensionManager, ExtensionType, PlainObject } from '@remirror/core';
 import { mapProps, ReactSerializer } from '@remirror/renderer-react';
 import React, { FC } from 'react';
 
@@ -8,6 +8,9 @@ export interface RemirrorSSRProps {
   manager: ExtensionManager;
 }
 
+/**
+ * Remirror SSR component used for rendering in non dom environments
+ */
 export const RemirrorSSR: FC<RemirrorSSRProps> = ({ attributes, manager, state }) => {
   const outerProps = mapProps(attributes);
   return (

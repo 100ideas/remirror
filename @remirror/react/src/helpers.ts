@@ -3,19 +3,16 @@ import {
   EMPTY_OBJECT_NODE,
   isFunction,
   isObject,
-  isPlainObject,
   isString,
-  isSymbol,
   PlainObject,
   Predicate,
 } from '@remirror/core';
 import { Children, isValidElement, ReactElement, ReactNode } from 'react';
-import { ExtensionComponent } from './components/extension';
 import {
   AttributePropFunction,
   RemirrorComponentType,
+  RemirrorElementType,
   RemirrorProps,
-  RemirrorType,
   RenderPropFunction,
 } from './types';
 
@@ -131,7 +128,6 @@ export const updateChildWithKey = (
 
 export const defaultProps = asDefaultProps<RemirrorProps>()({
   initialContent: EMPTY_OBJECT_NODE,
-  extensions: [],
   editable: true,
   usesBuiltInExtensions: true,
   attributes: {},
@@ -152,7 +148,7 @@ export const isRemirrorExtensionComponent = <GOptions extends {} = any>(
   return (
     isObject(value) &&
     isValidElement(value) &&
-    (value.type as RemirrorComponentType<GOptions>).$$remirrorType === RemirrorType.Extension
+    (value.type as RemirrorComponentType<GOptions>).$$remirrorType === RemirrorElementType.Extension
   );
 };
 
@@ -166,4 +162,15 @@ export const isRemirrorEditorType = <GOptions extends {} = any>(
 ): value is ReactElement<any> & { type: RemirrorComponentType<GOptions> } =>
   isObject(value) &&
   isValidElement(value) &&
-  (value.type as RemirrorComponentType<GOptions>).$$remirrorType === RemirrorType.EditorProvider;
+  (value.type as RemirrorComponentType<GOptions>).$$remirrorType === RemirrorElementType.EditorProvider;
+
+/**
+ * Checks for whether the extension component
+ */
+export const isManagedEditorProvider = <GOptions extends {} = any>(
+  value: unknown,
+): value is ReactElement<any> & { type: RemirrorComponentType<GOptions> } =>
+  isObject(value) &&
+  isValidElement(value) &&
+  (value.type as RemirrorComponentType<GOptions>).$$remirrorType ===
+    RemirrorElementType.ManagedEditorProvider;

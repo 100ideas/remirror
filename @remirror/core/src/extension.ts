@@ -17,7 +17,6 @@ export abstract class Extension<GOptions extends {} = {}, GType = never> {
   public static Component: any;
 
   public readonly options: Required<GOptions>;
-
   public abstract readonly name: string;
   private pk?: PluginKey;
 
@@ -35,18 +34,6 @@ export abstract class Extension<GOptions extends {} = {}, GType = never> {
 
   protected init() {
     this.pk = new PluginKey(this.name);
-  }
-
-  /**
-   * An extension can declare the extensions it requires with options needed for instantiating them
-   *
-   * When creating the extension manager the extension will be checked for required extension as well as
-   * a quick check to see if the required extension is already included.
-   *
-   * TODO implement this functionality
-   */
-  public get requiredExtensions(): RequiredExtension[] {
-    return [];
   }
 
   get type() {
@@ -67,6 +54,16 @@ export abstract class Extension<GOptions extends {} = {}, GType = never> {
 }
 
 export interface Extension<GOptions extends {} = {}, GType = never> {
+  /**
+   * An extension can declare the extensions it requires with options needed for instantiating them
+   *
+   * When creating the extension manager the extension will be checked for required extension as well as
+   * a quick check to see if the required extension is already included.
+   *
+   * TODO implement this functionality
+   */
+  readonly requiredExtensions?: RequiredExtension[];
+
   /**
    * Determines whether this extension is currently active (only applies to Node Extensions and Mark Extensions)
    * @param params

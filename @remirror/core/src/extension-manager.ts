@@ -13,7 +13,7 @@ import {
   isNodeExtension,
   transformExtensionMap,
 } from './extension-manager.helpers';
-import { bool } from './helpers';
+import { bool, isEqual, isObject } from './helpers';
 import { getPluginState } from './helpers/document';
 import { NodeViewPortalContainer } from './portal-container';
 import {
@@ -56,12 +56,50 @@ export class ExtensionManager {
   }
 
   /**
-   * Initialize the getters used when
+   * Initialize the getters.
    */
   public init({ getEditorState, getPortalContainer }: ExtensionManagerInitParams) {
+    if (this.initialized) {
+      console.warn(
+        'This manager is already in use. Make sure not to use the same manager for more than one editor as this will cause problems with conflicting editor schema.',
+      );
+    }
+
     this.getEditorState = getEditorState;
     this.getPortalContainer = getPortalContainer;
     this.initialized = true;
+    return this;
+  }
+
+  /**
+   * Checks whether two manager's are equal. Can be used to determine whether
+   * a change in props has caused anything to actually change and prevent a rerender.
+   *
+   * ExtensionManagers are equal when
+   * - They have the same number of extensions
+   * - Same order of extensions
+   * - Each extension has the same options
+   */
+  public isEqual(otherManager: unknown) {
+    if (!isExtensionManager(otherManager)) {
+      return false;
+    }
+
+    if (this.extensions.length !== otherManager.extensions.length) {
+      return false;
+    }
+
+    for (let ii = 0; ii <= this.extensions.length - 1; ii++) {
+      const ext = this.extensions[ii];
+      const otherExt = otherManager.extensions[ii];
+
+      if (ext.constructor === otherExt.constructor && isEqual(ext.options, otherExt.options)) {
+        continue;
+      }
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -316,4 +354,13 @@ const booleanFlexibleFunctionMap = <GKey extends 'enabled' | 'active'>(key: GKey
         getPortalContainer: ctx.getPortalContainer,
       }),
   });
+};
+
+/**
+ * Checks to see whether this is an extension manager
+ *
+ * @param value
+ */
+export const isExtensionManager = (value: unknown): value is ExtensionManager => {
+  return isObject(value) && value instanceof ExtensionManager;
 };

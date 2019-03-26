@@ -134,7 +134,6 @@ export interface RemirrorProps {
   /**
    * Pass in the extension manager.
    *
-   * @default []
    */
   manager: ExtensionManager;
 
@@ -300,10 +299,17 @@ export interface UsePositionerParams<GRefKey extends string = 'ref'>
     PositionerParams,
     RefParams<GRefKey> {}
 
-export enum RemirrorType {
+/**
+ * Used to mark a remirror specific component to determine it's behaviour.
+ */
+export enum RemirrorElementType {
   Extension = 'extension',
+  SSR = 'ssr',
   EditorProvider = 'editor-provider',
+  ManagedEditorProvider = 'managed-editor-provider',
+  Editor = 'editor',
   Manager = 'manager',
+  ManagerProvider = 'manager-provider',
 }
 
 export type ExtensionComponentProps<
@@ -367,7 +373,7 @@ export interface RemirrorComponentStaticProperties {
   /**
    * Identifies this as a remirror specific component
    */
-  $$remirrorType: RemirrorType;
+  $$remirrorType: RemirrorElementType;
 }
 
 export type RemirrorComponentType<P extends {}> = ComponentType<P> & RemirrorComponentStaticProperties;
@@ -380,10 +386,3 @@ export interface RemirrorManagerProps {
    */
   useBaseExtensions?: boolean;
 }
-
-export interface ExtensionMapValue {
-  extension: Extension;
-  priority: number;
-}
-
-export type ExtensionMap = Map<symbol, ExtensionMapValue>;

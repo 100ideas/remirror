@@ -1,6 +1,6 @@
 import { Cast, Extension, SimpleExtensionConstructor } from '@remirror/core';
 import { Component } from 'react';
-import { ExtensionComponentProps, RemirrorType } from '../types';
+import { ExtensionComponentProps, RemirrorElementType } from '../types';
 
 export class ExtensionComponent<
   GOptions extends {},
@@ -16,7 +16,7 @@ export class ExtensionComponent<
   >
 > extends Component<GProps> {
   public static $$remirror = {
-    type: RemirrorType.Extension,
+    type: RemirrorElementType.Extension,
   };
 
   public static defaultProps = { registerExtension: () => () => {} };
