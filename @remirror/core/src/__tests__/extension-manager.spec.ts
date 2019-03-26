@@ -38,7 +38,7 @@ test('ExtensionManager#properties', () => {
   expect(em).toBeInstanceOf(ExtensionManager);
   expect(em.extensions).toHaveLength(4);
   expect(em.getEditorState()).toBe('state');
-  expect(em.getEditorState()).toBe('portals');
+  expect(em.getPortalContainer()).toBe('portals');
 });
 
 const schema = new Schema({

@@ -1,9 +1,9 @@
-import React, { Children, cloneElement, PureComponent, ReactElement } from 'react';
+import React, { Children, cloneElement, Component, ReactElement } from 'react';
 
 import { Doc, ExtensionManager, ExtensionMap, ExtensionMapValue, Paragraph, Text } from '@remirror/core';
 import { Composition, History, Placeholder } from '@remirror/core-extensions';
 import { RemirrorManagerContext } from '../contexts';
-import { isManagedEditorProvider, isRemirrorExtensionComponent } from '../helpers';
+import { asDefaultProps, isManagedEditorProvider, isRemirrorExtensionComponent } from '../helpers';
 import { RegisterExtension, RemirrorManagerProps } from '../types';
 
 interface State {
@@ -11,7 +11,11 @@ interface State {
   length: number;
 }
 
-export class RemirrorManager extends PureComponent<RemirrorManagerProps, State> {
+export class RemirrorManager extends Component<RemirrorManagerProps, State> {
+  public static defaultProps = asDefaultProps<RemirrorManagerProps>()({
+    useBaseExtensions: true,
+  });
+
   private get extensionComponents() {
     return Children.toArray(this.props.children).filter(isRemirrorExtensionComponent);
   }
@@ -28,6 +32,7 @@ export class RemirrorManager extends PureComponent<RemirrorManagerProps, State> 
   };
 
   private registerExtension: RegisterExtension<any> = ({ extension, id, priority }) => {
+    console.log('registering extension', id, extension);
     // Check if this is the first time the extension is being added
     const update = this.extensionMap.has(id);
 
@@ -58,20 +63,26 @@ export class RemirrorManager extends PureComponent<RemirrorManagerProps, State> 
     const { children } = this.props;
     return Children.map(children, child => {
       const { manager } = this.state;
+
+      // if (isValidElement(child) && isArray((child.props as any).children)) {}
+
       if (isRemirrorExtensionComponent(child)) {
+        console.log('is remirror child', child, this.state);
         return mapExtensionComponent({ element: child, registerExtension: this.registerExtension });
       }
 
       if (isManagedEditorProvider(child)) {
+        console.log('is managed editor', this.state);
         if (manager) {
           return child;
         }
         return null; // Render nothing while the manager has not yet been instantiated
       }
 
-      throw new Error(
-        'Invalid element found in children of Remirror Manager. Please only use supported Remirror elements or a fragment.',
-      );
+      // throw new Error(
+      //   'Invalid element found in children of Remirror Manager. Please only use supported Remirror elements or a fragment.',
+      // );
+      return child;
     });
   }
 
@@ -88,6 +99,7 @@ export class RemirrorManager extends PureComponent<RemirrorManagerProps, State> 
 
   public render() {
     const { manager } = this.state;
+    console.log('This is the manager', manager);
     return (
       <RemirrorManagerContext.Provider value={manager}>{this.mapChildren()}</RemirrorManagerContext.Provider>
     );

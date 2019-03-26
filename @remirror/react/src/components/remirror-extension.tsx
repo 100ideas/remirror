@@ -1,24 +1,21 @@
 import { Cast, Extension, SimpleExtensionConstructor } from '@remirror/core';
 import { Component } from 'react';
-import { ExtensionComponentProps, RemirrorElementType } from '../types';
+import { RemirrorElementType, RemirrorExtensionProps } from '../types';
 
-export class ExtensionComponent<
+export class RemirrorExtension<
   GOptions extends {},
   GExtension extends Extension<GOptions, any> = Extension<GOptions, any>,
   GConstructor extends SimpleExtensionConstructor<GOptions, GExtension> = SimpleExtensionConstructor<
     GOptions,
     GExtension
   >,
-  GProps extends ExtensionComponentProps<GOptions, GExtension, GConstructor> = ExtensionComponentProps<
+  GProps extends RemirrorExtensionProps<GOptions, GExtension, GConstructor> = RemirrorExtensionProps<
     GOptions,
     GExtension,
     GConstructor
   >
 > extends Component<GProps> {
-  public static $$remirror = {
-    type: RemirrorElementType.Extension,
-  };
-
+  public static $$remirrorType = RemirrorElementType.Extension;
   public static defaultProps = { registerExtension: () => () => {} };
 
   private id = Symbol(this.props.Constructor.name);

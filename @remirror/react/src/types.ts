@@ -311,7 +311,7 @@ export enum RemirrorElementType {
   ManagerProvider = 'manager-provider',
 }
 
-export type ExtensionComponentProps<
+export type RemirrorExtensionProps<
   GOptions extends {} = {},
   GExtension extends Extension<GOptions, any> = Extension<GOptions, any>,
   GConstructor extends SimpleExtensionConstructor<GOptions, GExtension> = SimpleExtensionConstructor<

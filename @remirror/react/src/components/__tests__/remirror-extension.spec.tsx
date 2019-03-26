@@ -1,8 +1,21 @@
-import { Placeholder, PlaceholderOptions } from '@remirror/core-extensions';
+import { Placeholder } from '@remirror/core-extensions';
 import React from 'react';
 import { render } from 'react-testing-library';
-import { ExtensionComponent } from '../remirror-extension';
+import { RemirrorExtension } from '../remirror-extension';
 
-test('simple', () => {
-  render(<ExtensionComponent<PlaceholderOptions> Constructor={Placeholder} emptyNodeClass='empty' />);
+const unregister = jest.fn();
+const inject = {
+  registerExtension: jest.fn(() => unregister),
+};
+
+test('can instantiate different extensions', () => {
+  const { unmount } = render(
+    <RemirrorExtension Constructor={Placeholder} emptyNodeClass='empty' {...inject} />,
+  );
+
+  expect(inject.registerExtension).toBeCalledWith(
+    expect.objectContaining({ id: expect.anything(), extension: expect.any(Placeholder), priority: 2 }),
+  );
+  unmount();
+  expect(unregister).toHaveBeenCalled();
 });

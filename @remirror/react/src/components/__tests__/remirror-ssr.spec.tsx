@@ -45,13 +45,13 @@ test('can render with a non-dom top level node', () => {
   expect(reactString).toInclude('<div role="textbox"');
 });
 
+// ! Bug - Can't currently render html as initial content with SSR.
 test.skip('can render with html content', () => {
   const reactString = renderToString(
-    <Remirror {...handlers} label={label} initialContent={'<p>Hello</p>'} manager={createTestManager()}>
+    <Remirror {...handlers} label={label} initialContent='<p>Hello</p>' manager={createTestManager()}>
       {() => <Fragment />}
     </Remirror>,
   );
-  console.log(reactString);
   expect(reactString).toInclude('Hello');
 });
 

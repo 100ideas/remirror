@@ -18,7 +18,7 @@ const handlers = {
 test('should be called via a render prop', () => {
   const mock = jest.fn(() => <div />);
   const { getByLabelText } = render(
-    <Remirror manager={createTestManager()} label={label}>
+    <Remirror manager={createTestManager()} label={label} {...handlers}>
       {mock}
     </Remirror>,
   );
@@ -92,4 +92,39 @@ test('should render a unique class on the root document', () => {
   );
   const editorNode = getByLabelText(label);
   expect(editorNode.className).toMatch(/remirror-[A-Za-z0-9_-]{5}/);
+});
+
+describe('initialContent', () => {
+  it('should render with html content', () => {
+    const { container } = render(
+      <Remirror label={label} {...handlers} manager={createTestManager()} initialContent={'<p>Hello</p>'}>
+        {() => <div />}
+      </Remirror>,
+    );
+    expect(container.innerHTML).toInclude('Hello');
+  });
+
+  it('renders with json', () => {
+    const content = {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            {
+              type: 'text',
+              text: 'Hello',
+            },
+          ],
+        },
+      ],
+    };
+
+    const { container } = render(
+      <Remirror label={label} {...handlers} manager={createTestManager()} initialContent={content}>
+        {() => <div />}
+      </Remirror>,
+    );
+    expect(container.innerHTML).toInclude('Hello');
+  });
 });

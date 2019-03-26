@@ -49,6 +49,7 @@ export const RemirrorEditor: RemirrorFC<Omit<RemirrorProviderProps, 'manager'>> 
   ...props
 }) => {
   const manager = useRemirrorManagerContext();
+  console.log(manager);
   return manager ? (
     <RemirrorEditorProvider {...props} manager={manager}>
       {children}
