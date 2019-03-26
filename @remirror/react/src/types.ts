@@ -1,5 +1,4 @@
 import {
-  AnyExtension,
   CompareStateParams,
   EditorSchema,
   EditorState,

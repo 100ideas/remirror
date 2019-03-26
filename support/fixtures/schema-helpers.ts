@@ -1,4 +1,4 @@
-import { Doc, ExtensionManager, Paragraph, Text } from '@remirror/core';
+import { Doc, ExtensionManager, Paragraph, Text, Cast } from '@remirror/core';
 import {
   Bold,
   Italic,
@@ -11,9 +11,10 @@ import {
 import minDocument from 'min-document';
 
 export const helpers = {
-  getEditorState: jest.fn(),
-  getPortalContainer: jest.fn(),
+  getEditorState: Cast(jest.fn()),
+  getPortalContainer: Cast(jest.fn()),
 };
+
 export const extensions = [
   { extension: new Composition(), priority: 2 },
   { extension: new Doc(), priority: 2 },

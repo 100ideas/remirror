@@ -1,4 +1,4 @@
-import { EditorState, ExtensionManager, ExtensionType, PlainObject } from '@remirror/core';
+import { EditorState, ExtensionManager, PlainObject } from '@remirror/core';
 import { mapProps, ReactSerializer } from '@remirror/renderer-react';
 import React, { FC } from 'react';
 
