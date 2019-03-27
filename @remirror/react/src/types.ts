@@ -343,10 +343,6 @@ export interface BaseExtensionComponentProps<
    */
   priority?: number;
   children?: never;
-  /**
-   * This props is auto-injected into the component.
-   */
-  registerExtension: RegisterExtension<GOptions>;
 }
 
 export interface RegisterExtensionParams<GOptions extends {}> {

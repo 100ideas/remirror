@@ -25,7 +25,7 @@ const text = new Text();
 const paragraph = new Paragraph();
 const dummy = new DummyMark();
 
-const em = new ExtensionManager([
+const em = ExtensionManager.create([
   { extension: doc, priority: 2 },
   { extension: text, priority: 2 },
   { extension: paragraph, priority: 2 },

@@ -27,9 +27,9 @@ export const extensions = [
   { extension: new Underline(), priority: 3 },
   { extension: new Blockquote(), priority: 3 },
 ];
-export const manager = new ExtensionManager(extensions).init(helpers);
+export const manager = ExtensionManager.create(extensions).init(helpers);
 
-export const createTestManager = () => new ExtensionManager(extensions);
+export const createTestManager = () => ExtensionManager.create(extensions);
 
 export const schema = manager.createSchema();
 export const plugins = manager.plugins({ schema, ...helpers });

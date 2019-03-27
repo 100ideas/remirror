@@ -28,7 +28,7 @@ export type RemirrorProviderProps = MakeOptional<Omit<RemirrorProps, 'children'>
  * - `withRemirror`
  * - `withPositioner`
  */
-export const RemirrorEditorProvider: RemirrorFC<RemirrorProviderProps> = ({ children, ...props }) => {
+export const RemirrorEditor: RemirrorFC<RemirrorProviderProps> = ({ children, ...props }) => {
   return (
     <Remirror {...props}>
       {value => <RemirrorEditorContext.Provider value={value}>{children}</RemirrorEditorContext.Provider>}
@@ -36,7 +36,7 @@ export const RemirrorEditorProvider: RemirrorFC<RemirrorProviderProps> = ({ chil
   );
 };
 
-RemirrorEditorProvider.$$remirrorType = RemirrorElementType.EditorProvider;
+RemirrorEditor.$$remirrorType = RemirrorElementType.EditorProvider;
 
 /**
  * Renders the content while pulling the manager from the context and passing it on to the
@@ -44,20 +44,20 @@ RemirrorEditorProvider.$$remirrorType = RemirrorElementType.EditorProvider;
  *
  * If no manager exists the child components are not rendered.
  */
-export const RemirrorEditor: RemirrorFC<Omit<RemirrorProviderProps, 'manager'>> = ({
+export const ManagedRemirrorEditor: RemirrorFC<Omit<RemirrorProviderProps, 'manager'>> = ({
   children,
   ...props
 }) => {
   const manager = useRemirrorManagerContext();
-  console.log(manager);
+
   return manager ? (
-    <RemirrorEditorProvider {...props} manager={manager}>
+    <RemirrorEditor {...props} manager={manager}>
       {children}
-    </RemirrorEditorProvider>
+    </RemirrorEditor>
   ) : null;
 };
 
-RemirrorEditor.$$remirrorType = RemirrorElementType.ManagedEditorProvider;
+ManagedRemirrorEditor.$$remirrorType = RemirrorElementType.ManagedEditorProvider;
 
 const checkValidRenderPropParams = (params: InjectedRemirrorProps) => {
   if (isEmptyObject(params)) {

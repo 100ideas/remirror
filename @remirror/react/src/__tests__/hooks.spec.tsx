@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { injectedPropsShape, positionerShape } from '@test-fixtures/object-shapes';
 import { createTestManager } from '@test-fixtures/schema-helpers';
 import { render } from 'react-testing-library';
-import { RemirrorEditorProvider } from '../components/providers';
+import { RemirrorEditor } from '../components/providers';
 import { usePositioner, useRemirrorContext } from '../hooks';
 import { bubblePositioner } from '../positioners';
 
@@ -16,9 +16,9 @@ test('useRemirrorContext', () => {
   };
 
   render(
-    <RemirrorEditorProvider manager={createTestManager()}>
+    <RemirrorEditor manager={createTestManager()}>
       <HookComponent />
-    </RemirrorEditorProvider>,
+    </RemirrorEditor>,
   );
 });
 
@@ -31,8 +31,8 @@ test('usePositioner', () => {
   };
 
   render(
-    <RemirrorEditorProvider manager={createTestManager()}>
+    <RemirrorEditor manager={createTestManager()}>
       <HookComponent />
-    </RemirrorEditorProvider>,
+    </RemirrorEditor>,
   );
 });

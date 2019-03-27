@@ -73,7 +73,7 @@ export const renderEditor = <
     ...attrMarks,
     ...attrNodes,
   ].map(extension => ({ extension, priority: 2 }));
-  const manager = new ExtensionManager(extensions);
+  const manager = ExtensionManager.create(extensions);
   let returnedParams!: InjectedRemirrorProps;
   const utils = render(
     <Remirror {...props} manager={manager}>

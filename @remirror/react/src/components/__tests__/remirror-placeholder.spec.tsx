@@ -26,7 +26,7 @@ const extensions = [
 test('should not fail without the placeholder extension', () => {
   expect(() =>
     render(
-      <Remirror {...handlers} label={label} manager={new ExtensionManager(extensions)}>
+      <Remirror {...handlers} label={label} manager={ExtensionManager.create(extensions)}>
         {() => <div />}
       </Remirror>,
     ),

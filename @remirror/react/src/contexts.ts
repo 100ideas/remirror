@@ -10,4 +10,4 @@ export const RemirrorEditorContext = createContext<InjectedRemirrorProps>(Cast<I
 /**
  * Creates a ReactContext for the RemirrorManager component
  */
-export const RemirrorManagerContext = createContext<ExtensionManager | undefined>(undefined);
+export const RemirrorManagerContext = createContext<ExtensionManager>(ExtensionManager.create([]));
