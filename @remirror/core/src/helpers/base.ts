@@ -488,3 +488,11 @@ export const clone = <GObject extends {}>(value: GObject) => {
  * Alias for fast deep equal
  */
 export const isEqual = fastDeepEqual;
+
+/**
+ * Create a unique array
+ */
+export const uniqueArray = (array: unknown[]) => {
+  const set = new Set(array);
+  return Array.from(set);
+};

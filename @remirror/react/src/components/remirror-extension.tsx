@@ -11,16 +11,9 @@ import { RemirrorElementType, RemirrorExtensionProps, RemirrorNodeExtensionProps
 export class RemirrorExtension<
   GOptions extends {},
   GExtension extends Extension<GOptions, any> = Extension<GOptions, any>,
-  GConstructor extends ExtensionConstructor<GOptions, GExtension> = ExtensionConstructor<
-    GOptions,
-    GExtension
-  >,
-  GProps extends RemirrorExtensionProps<GOptions, GExtension, GConstructor> = RemirrorExtensionProps<
-    GOptions,
-    GExtension,
-    GConstructor
-  >
-> extends Component<RemirrorExtensionProps<GOptions, GExtension, GConstructor>> {
+  GConstructor = ExtensionConstructor<GOptions, GExtension>,
+  GProps = RemirrorExtensionProps<GOptions, GExtension, GConstructor>
+> extends Component<GProps> {
   public static $$remirrorType = RemirrorElementType.Extension;
 
   /**

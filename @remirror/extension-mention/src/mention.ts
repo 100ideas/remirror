@@ -48,8 +48,6 @@ export class Mention extends NodeExtension<MentionOptions> {
       onChange: () => false,
       onExit: () => false,
       onKeyDown: () => false,
-      command: ({ range, attrs, appendText, schema }: SuggestionsCommandParams) =>
-        replaceText(range, schema.nodes[this.name], attrs, appendText),
     };
   }
 

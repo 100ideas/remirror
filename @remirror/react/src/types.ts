@@ -72,7 +72,7 @@ export interface GetRootPropsConfig<GRefKey extends string = 'ref'> extends RefP
 
 export type RefKeyRootProps<GRefKey extends string = 'ref'> = {
   [P in Exclude<GRefKey, 'children' | 'key'>]: React.Ref<any>
-} & { className: string; key: string } & PlainObject;
+} & { css: Interpolation; key: string } & PlainObject;
 
 export type GetPositionerReturn<GRefKey extends string = 'ref'> = PositionerProps &
   { [P in GRefKey]: React.Ref<any> };
@@ -338,13 +338,13 @@ export interface NodeExtensionConstructorProps<
 export type RemirrorExtensionProps<
   GOptions extends {},
   GExtension extends Extension<GOptions, any> = Extension<GOptions, any>,
-  GConstructor extends ExtensionConstructor<GOptions, GExtension> = ExtensionConstructor<GOptions, GExtension>
+  GConstructor = ExtensionConstructor<GOptions, GExtension>
 > = GOptions & BaseExtensionProps & ExtensionConstructorProps<GOptions, GExtension, GConstructor>;
 
 export interface ExtensionConstructorProps<
   GOptions extends {},
   GExtension extends Extension<GOptions, any> = Extension<GOptions, any>,
-  GConstructor extends ExtensionConstructor<GOptions, GExtension> = ExtensionConstructor<GOptions, GExtension>
+  GConstructor = ExtensionConstructor<GOptions, GExtension>
 > {
   /**
    * The constructor for the remirror extension.

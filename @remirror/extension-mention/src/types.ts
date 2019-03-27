@@ -82,6 +82,7 @@ export interface SuggestionsCommandParams {
   range: FromToParams | null;
   schema: EditorSchema;
   appendText?: string;
+  name: string;
 }
 export interface SuggestionsCallbackParams extends SuggestionStateField {
   view: EditorView;
@@ -138,11 +139,6 @@ export interface MentionOptions extends NodeExtensionOptions {
    * Tag which wraps an active match
    */
   decorationsTag?: keyof HTMLElementTagNameMap;
-
-  /**
-   * Custom command to fire when a match has been made
-   */
-  command?(params: SuggestionsCommandParams): CommandFunction;
 
   /**
    * Called when a suggestion is entered for the first time.
