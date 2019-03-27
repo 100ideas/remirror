@@ -1,11 +1,19 @@
-import React, { PureComponent } from 'react';
+import React, { FC, PureComponent } from 'react';
 
-import { AnyExtension, Attrs, EditorView, ExtensionManager, Omit, omit } from '@remirror/core';
+import { AnyExtension, Attrs, EditorView, Omit, omit } from '@remirror/core';
 import { InlineCursorTarget } from '@remirror/core-extensions';
-import { EmojiNode, isBaseEmoji } from '@remirror/extension-emoji';
+import { EmojiNode, EmojiNodeOptions, isBaseEmoji } from '@remirror/extension-emoji';
 import { EnhancedLink, EnhancedLinkOptions } from '@remirror/extension-enhanced-link';
-import { Mention, NodeAttrs, OnKeyDownParams } from '@remirror/extension-mention';
-import { Remirror, RemirrorEventListener, RemirrorProps } from '@remirror/react';
+import { Mention, MentionNodeAttrs, MentionOptions, OnKeyDownParams } from '@remirror/extension-mention';
+import {
+  ManagedRemirrorEditor,
+  RemirrorEventListener,
+  RemirrorExtension,
+  RemirrorManager,
+  RemirrorNodeExtension,
+  RemirrorProps,
+  useRemirrorContext,
+} from '@remirror/react';
 import { Data, EmojiSet } from 'emoji-mart';
 import { ThemeProvider } from 'emotion-theming';
 import keyCode from 'keycode';
@@ -187,7 +195,7 @@ export class TwitterUI extends PureComponent<TwitterUIProps, State> {
     }));
   }
 
-  private atMentionSubmitFactory(command: (attrs: NodeAttrs) => void) {
+  private atMentionSubmitFactory(command: (attrs: MentionNodeAttrs) => void) {
     return (user: TwitterUserData) => () => {
       this.exitCommandEnabled = false; // Prevents exit command also being called after this
 
@@ -212,7 +220,7 @@ export class TwitterUI extends PureComponent<TwitterUIProps, State> {
    * @param command
    * @param appendText
    */
-  private hashMentionSubmitFactory(command: (attrs: NodeAttrs) => void) {
+  private hashMentionSubmitFactory(command: (attrs: MentionNodeAttrs) => void) {
     return ({ tag }: TwitterTagData) => () => {
       this.exitCommandEnabled = false; // Prevents exit command also being called after this
       command({
@@ -343,66 +351,84 @@ export class TwitterUI extends PureComponent<TwitterUIProps, State> {
     const { mention, emojiPickerActive } = this.state;
     return (
       <ThemeProvider theme={this.theme}>
-        <Remirror
-          placeholder={[
-            "What's happening?",
-            {
-              color: '#aab8c2',
-              fontStyle: 'normal',
-              position: 'absolute',
-              fontWeight: 300,
-              letterSpacing: '0.5px',
-            },
-          ]}
-          {...this.remirrorProps}
-          manager={ExtensionManager.create(this.extensions.map(extension => ({ extension, priority: 2 })))}
-          onChange={this.onChange}
-          insertPosition='start'
-        >
-          {({ getRootProps, view, actions }) => {
-            const content = view.state.doc.textContent;
-            this.storeView(view);
-
-            return (
-              <div>
-                <RemirrorWrapper {...getRootProps()} style={{ position: 'relative' }}>
-                  <CharacterCountWrapper>
-                    <CharacterCountIndicator characters={{ total: 140, used: content.length }} />
-                  </CharacterCountWrapper>
-                  {emojiPickerActive && (
-                    <EmojiPickerWrapper>
-                      <EmojiPicker
-                        onBlur={this.onBlurEmojiPicker}
-                        data={this.props.emojiData}
-                        set={this.props.emojiSet}
-                        onSelection={this.onSelectEmoji(actions.emoji.command)}
-                        ignoredElements={[this.toggleEmojiRef.current!]}
-                      />
-                    </EmojiPickerWrapper>
-                  )}
-                  <EmojiSmileyWrapper>
-                    <span
-                      role='button'
-                      aria-pressed={emojiPickerActive ? 'true' : 'false'}
-                      onClick={this.onClickEmojiSmiley}
-                      ref={this.toggleEmojiRef}
-                    >
-                      <EmojiSmiley active={emojiPickerActive} />
-                    </span>
-                  </EmojiSmileyWrapper>
-                </RemirrorWrapper>
-                <div>
-                  {!mention ? null : mention.type === 'mentionAt' ? (
-                    <AtSuggestions data={this.userMatches} submitFactory={mention.submitFactory} />
-                  ) : (
-                    <HashSuggestions data={this.tagMatches} submitFactory={mention.submitFactory} />
-                  )}
-                </div>
-              </div>
-            );
-          }}
-        </Remirror>
+        <RemirrorManager>
+          <RemirrorExtension Constructor={InlineCursorTarget} />
+          <RemirrorExtension<MentionOptions>
+            Constructor={Mention}
+            matchers={[{ name: 'at', char: '@' }, { name: 'tag', char: '#' }]}
+            extraAttrs={['href', 'role']}
+          />
+          <RemirrorExtension<EnhancedLinkOptions>
+            Constructor={EnhancedLink}
+            onUrlsChange={this.props.onUrlsChange}
+          />
+          <RemirrorExtension<EmojiNodeOptions>
+            Constructor={EmojiNode}
+            set={this.props.emojiSet}
+            emojiData={this.props.emojiData}
+          />
+          <ManagedRemirrorEditor
+            placeholder={[
+              "What's happening?",
+              {
+                color: '#aab8c2',
+                fontStyle: 'normal',
+                position: 'absolute',
+                fontWeight: 300,
+                letterSpacing: '0.5px',
+              },
+            ]}
+            {...this.remirrorProps}
+            onChange={this.onChange}
+            insertPosition='start'
+          />
+        </RemirrorManager>
       </ThemeProvider>
     );
   }
 }
+
+const Component: FC = () => {
+  const { getRootProps, view, actions } = useRemirrorContext();
+  const content = view.state.doc.textContent;
+
+  return (
+    <div>
+      <RemirrorWrapper {...getRootProps()} style={{ position: 'relative' }}>
+        <CharacterCountWrapper>
+          <CharacterCountIndicator characters={{ total: 140, used: content.length }} />
+        </CharacterCountWrapper>
+        {emojiPickerActive && (
+          <EmojiPickerWrapper>
+            <EmojiPicker
+              onBlur={this.onBlurEmojiPicker}
+              data={this.props.emojiData}
+              set={this.props.emojiSet}
+              onSelection={this.onSelectEmoji(actions.emoji.command)}
+              ignoredElements={[this.toggleEmojiRef.current!]}
+            />
+          </EmojiPickerWrapper>
+        )}
+        <EmojiSmileyWrapper>
+          <span
+            role='button'
+            aria-pressed={emojiPickerActive ? 'true' : 'false'}
+            onClick={this.onClickEmojiSmiley}
+            ref={this.toggleEmojiRef}
+          >
+            <EmojiSmiley active={emojiPickerActive} />
+          </span>
+        </EmojiSmileyWrapper>
+      </RemirrorWrapper>
+      <div>
+        {!mention ? null : mention.type === 'mentionAt' ? (
+          <AtSuggestions data={this.userMatches} submitFactory={mention.submitFactory} />
+        ) : (
+          <HashSuggestions data={this.tagMatches} submitFactory={mention.submitFactory} />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const Emo;
