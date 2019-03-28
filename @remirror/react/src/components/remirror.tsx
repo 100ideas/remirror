@@ -2,7 +2,6 @@ import React, { Component, Fragment, ReactNode, Ref } from 'react';
 
 import { css, Interpolation, jsx } from '@emotion/core';
 import {
-  cloneElement,
   CompareStateParams,
   createDocumentNode,
   EDITOR_CLASS_NAME,
@@ -33,6 +32,7 @@ import { inputRules, undoInputRule } from 'prosemirror-inputrules';
 import { keymap } from 'prosemirror-keymap';
 import { EditorState } from 'prosemirror-state';
 import {
+  cloneElement,
   defaultProps,
   getElementProps,
   isAttributeFunction,
