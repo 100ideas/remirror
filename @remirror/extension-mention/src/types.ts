@@ -1,6 +1,5 @@
 import {
   Attrs,
-  CommandFunction,
   EditorSchema,
   EditorView,
   FromToParams,

@@ -9,7 +9,7 @@ import {
 } from '@remirror/core';
 import { createSuggestionsPlugin } from './plugin';
 import { SuggestionState } from './state';
-import { MentionOptions, SuggestionsCommandParams } from './types';
+import { MentionOptions } from './types';
 import { DEFAULT_MATCHER } from './utils';
 
 /**

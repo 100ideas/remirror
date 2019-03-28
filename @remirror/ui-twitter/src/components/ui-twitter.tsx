@@ -49,7 +49,7 @@ export class TwitterUI extends PureComponent<TwitterUIProps, State> {
   public readonly state: State = { activeIndex: 0, emojiPickerActive: false };
   private exitCommandEnabled = false;
 
-  private onMentionEnter: Required<MentionOptions>['onEnter'] = ({ query, command, name, char }) => {
+  private onMentionEnter: Required<MentionOptions>['onEnter'] = ({ query, command, name }) => {
     if (name === 'at') {
       const params = {
         name: 'at' as 'at',
@@ -71,7 +71,7 @@ export class TwitterUI extends PureComponent<TwitterUIProps, State> {
     this.setActiveIndex(0);
   };
 
-  private onMentionChange: Required<MentionOptions>['onChange'] = ({ query, command, name, char }) => {
+  private onMentionChange: Required<MentionOptions>['onChange'] = ({ query, command, name }) => {
     if (name === 'at') {
       const params = {
         name: 'at' as 'at',

@@ -2,12 +2,11 @@ import React, { FC } from 'react';
 
 import { Attrs } from '@remirror/core';
 import { useRemirrorContext } from '@remirror/react';
-import { ActiveTwitterTagData, ActiveTwitterUserData } from '../types';
+import { ActiveTwitterTagData, ActiveTwitterUserData, MentionState, TwitterUIProps } from '../types';
 import { CharacterCountIndicator } from './character-count';
 import { EmojiPicker, EmojiPickerProps, EmojiSmiley } from './emoji-picker';
 import { CharacterCountWrapper, EmojiPickerWrapper, EmojiSmileyWrapper, RemirrorWrapper } from './styled';
 import { AtSuggestions, HashSuggestions } from './suggestions';
-import { MentionState, TwitterUIProps } from './types';
 
 interface TwitterEditorProps extends Pick<TwitterUIProps, 'emojiData' | 'emojiSet'> {
   mention?: MentionState;

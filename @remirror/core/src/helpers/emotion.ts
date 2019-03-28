@@ -10,12 +10,14 @@ export const cloneElement = (element: any, props: any, ...rest: ReactNode[]) => 
     ...(isArray(props.children) ? props.children : props.children ? [props.children] : []),
     ...(isArray(rest) ? rest : rest ? [rest] : []),
   ]);
-  console.log(element);
-  return jsx(element.type, {
-    key: element.key,
-    ref: element.ref,
-    ...element.props,
-    ...props,
-    children,
-  });
+  return jsx(
+    element.type,
+    {
+      key: element.key,
+      ref: element.ref,
+      ...element.props,
+      ...props,
+    },
+    ...children,
+  );
 };

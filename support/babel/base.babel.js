@@ -10,7 +10,7 @@ const nonTestEnv = { ignore };
 
 module.exports = {
   presets: [
-    ['@babel/preset-env'],
+    '@babel/preset-env',
     '@babel/preset-typescript',
     '@emotion/babel-preset-css-prop',
     '@babel/preset-react',

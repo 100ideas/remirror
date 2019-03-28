@@ -492,7 +492,7 @@ export const isEqual = fastDeepEqual;
 /**
  * Create a unique array
  */
-export const uniqueArray = (array: unknown[]) => {
+export const uniqueArray = <GType>(array: GType[]) => {
   const set = new Set(array);
   return Array.from(set);
 };
